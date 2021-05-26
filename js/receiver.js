@@ -76,7 +76,7 @@ playerManager.setMessageInterceptor(
           console.log("Data : ", data);
           // Obtain resources by contentId from downloaded repository metadata.
           // let item = data[request.media.contentId];
-          let item = data.body.artworks.length;
+          let item = data.artworks.length;
           if(item < 0) {
             // Content could not be found in repository
             castDebugLogger.error(LOG_TAG, 'Content not found');
@@ -87,7 +87,7 @@ playerManager.setMessageInterceptor(
 
             // // Configure player to parse DASH content
             // if(TEST_STREAM_TYPE == StreamType.DASH) {
-              request.media.contentUrl = data.body.artworks[0].media.video.dash;
+              request.media.contentUrl = data.artworks[0].media.video.dash;
             // }
 
             // // Configure player to parse HLS content
@@ -97,7 +97,7 @@ playerManager.setMessageInterceptor(
             //   request.media.hlsVideoSegmentFormat = cast.framework.messages.HlsVideoSegmentFormat.FMP4;
             // }
             
-            castDebugLogger.warn(LOG_TAG, 'Playable URL:', data.body.artworks[0].media.video.dash);
+            castDebugLogger.warn(LOG_TAG, 'Playable URL:', data.artworks[0].media.video.dash);
             
             // Add metadata
             let metadata = new cast.framework.messages.GenericMediaMetadata();
