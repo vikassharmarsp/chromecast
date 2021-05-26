@@ -2,7 +2,8 @@ const context = cast.framework.CastReceiverContext.getInstance();
 const playerManager = context.getPlayerManager();
 
 //Media Sample API Values
-const SAMPLE_URL = "https://storage.googleapis.com/cpe-sample-media/content.json";
+// const SAMPLE_URL = "https://storage.googleapis.com/cpe-sample-media/content.json";
+const SAMPLE_URL = "https://api.blackdove.io";
 const StreamType = {
   DASH: 'application/dash+xml',
   HLS: 'application/x-mpegurl'
@@ -31,6 +32,7 @@ castDebugLogger.loggerLevelByTags = {
 };
 
 function makeRequest (method, url) {
+  console.log("URL : ", url);
   return new Promise(function (resolve, reject) {
     let xhr = new XMLHttpRequest();
     xhr.open(method, url);
@@ -60,6 +62,7 @@ playerManager.setMessageInterceptor(
     castDebugLogger.info(LOG_TAG, 'Intercepting LOAD request');
 
     // Map contentId to entity
+    console.log("Request : ", request);
     if (request.media && request.media.entity) {
       request.media.contentId = request.media.entity;
     }
