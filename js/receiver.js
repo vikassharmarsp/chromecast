@@ -141,20 +141,20 @@ const playerDataBinder = new cast.framework.ui.PlayerDataBinder(playerData);
 // browseContent.targetAspectRatio =
 //   cast.framework.ui.BrowseImageAspectRatio.LANDSCAPE_16_TO_9;
 
-playerDataBinder.addEventListener(
-  cast.framework.ui.PlayerDataEventType.MEDIA_CHANGED,
-  (e) => {
-    if (!e.value) return;
+// playerDataBinder.addEventListener(
+//   cast.framework.ui.PlayerDataEventType.MEDIA_CHANGED,
+//   (e) => {
+//     if (!e.value) return;
 
-    // Media browse
-    touchControls.setBrowseContent(browseContent);
+//     // Media browse
+//     // touchControls.setBrowseContent(browseContent);
 
-    // Clear default buttons and re-assign
-    touchControls.clearDefaultSlotAssignments();
-    touchControls.assignButton(
-      cast.framework.ui.ControlsSlot.SLOT_PRIMARY_1,
-      cast.framework.ui.ControlsButton.SEEK_BACKWARD_30
-    );
-  });
+//     // Clear default buttons and re-assign
+//     touchControls.clearDefaultSlotAssignments();
+//     touchControls.assignButton(
+//       cast.framework.ui.ControlsSlot.SLOT_PRIMARY_1,
+//       cast.framework.ui.ControlsButton.SEEK_BACKWARD_30
+//     );
+//   });
 
 context.start();
