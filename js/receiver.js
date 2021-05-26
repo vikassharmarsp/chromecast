@@ -36,6 +36,8 @@ function makeRequest (method, url) {
   return new Promise(function (resolve, reject) {
     let xhr = new XMLHttpRequest();
     xhr.open(method, url);
+    xhr.setRequestHeader('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoidGVzdGVyM0BibGFja2RvdmUuY28iLCJpYXQiOjE2MjIwMjcxMDIsImV4cCI6MTYyMjExMzUwMiwianRpIjoiYWNjZXNzX3Rva2VuIn0.EK6xNhSRIzHIFsWo3-RPX0Z812CnOn4E71X7Myt24qY');
+    xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onload = function () {
       if (this.status >= 200 && this.status < 300) {
         resolve(JSON.parse(xhr.response));
