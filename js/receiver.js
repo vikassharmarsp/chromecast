@@ -3,7 +3,7 @@ const playerManager = context.getPlayerManager();
 
 //Media Sample API Values
 // const SAMPLE_URL = "https://storage.googleapis.com/cpe-sample-media/content.json";
-const SAMPLE_URL = "https://api.blackdove.io";
+const SAMPLE_URL = "https://api.blackdove.io/users/anonymous/playlists/Y0d4aGVXeHBjM1E9NzlmMzdkNzAtYTlmZC0xMWU3LWI5ZDMtNTU2OGIzMzVhMDUx";
 const StreamType = {
   DASH: 'application/dash+xml',
   HLS: 'application/x-mpegurl'
@@ -71,34 +71,36 @@ playerManager.setMessageInterceptor(
       // Fetch repository metadata
       makeRequest('GET', SAMPLE_URL)
         .then(function (data) {
+          console.log("Data : ", data);
           // Obtain resources by contentId from downloaded repository metadata.
-          let item = data[request.media.contentId];
-          if(!item) {
+          // let item = data[request.media.contentId];
+          let item = data.body.artworks.length;
+          if(item < 0) {
             // Content could not be found in repository
             castDebugLogger.error(LOG_TAG, 'Content not found');
             reject();
           } else {
             // Adjusting request to make requested content playable
-            request.media.contentType = TEST_STREAM_TYPE;
+            // request.media.contentType = TEST_STREAM_TYPE;
 
-            // Configure player to parse DASH content
-            if(TEST_STREAM_TYPE == StreamType.DASH) {
-              request.media.contentUrl = item.stream.dash;
-            }
+            // // Configure player to parse DASH content
+            // if(TEST_STREAM_TYPE == StreamType.DASH) {
+              request.media.contentUrl = data.body.artworks[0].media.video.dash;
+            // }
 
-            // Configure player to parse HLS content
-            else if(TEST_STREAM_TYPE == StreamType.HLS) {
-              request.media.contentUrl = item.stream.hls
-              request.media.hlsSegmentFormat = cast.framework.messages.HlsSegmentFormat.FMP4;
-              request.media.hlsVideoSegmentFormat = cast.framework.messages.HlsVideoSegmentFormat.FMP4;
-            }
+            // // Configure player to parse HLS content
+            // else if(TEST_STREAM_TYPE == StreamType.HLS) {
+            //   request.media.contentUrl = item.stream.hls
+            //   request.media.hlsSegmentFormat = cast.framework.messages.HlsSegmentFormat.FMP4;
+            //   request.media.hlsVideoSegmentFormat = cast.framework.messages.HlsVideoSegmentFormat.FMP4;
+            // }
             
-            castDebugLogger.warn(LOG_TAG, 'Playable URL:', request.media.contentUrl);
+            castDebugLogger.warn(LOG_TAG, 'Playable URL:', data.body.artworks[0].media.video.dash);
             
             // Add metadata
             let metadata = new cast.framework.messages.GenericMediaMetadata();
-            metadata.title = item.title;
-            metadata.subtitle = item.author;
+            metadata.title = "Blackdove Featured Collection";
+            metadata.subtitle = "App by Vikas Sharma";
 
             request.media.metadata = metadata;
 
@@ -114,30 +116,30 @@ const touchControls = cast.framework.ui.Controls.getInstance();
 const playerData = new cast.framework.ui.PlayerData();
 const playerDataBinder = new cast.framework.ui.PlayerDataBinder(playerData);
 
-let browseItems = getBrowseItems();
+// let browseItems = getBrowseItems();
 
-function getBrowseItems() {
-  let browseItems = [];
-  makeRequest('GET', SAMPLE_URL)
-  .then(function (data) {
-    for (let key in data) {
-      let item = new cast.framework.ui.BrowseItem();
-      item.entity = key;
-      item.title = data[key].title;
-      item.subtitle = data[key].description;
-      item.image = new cast.framework.messages.Image(data[key].poster);
-      item.imageType = cast.framework.ui.BrowseImageType.MOVIE;
-      browseItems.push(item);
-    }
-  });
-  return browseItems;
-}
+// function getBrowseItems() {
+//   let browseItems = [];
+//   makeRequest('GET', SAMPLE_URL)
+//   .then(function (data) {
+//     for (let key in data) {
+//       let item = new cast.framework.ui.BrowseItem();
+//       item.entity = key;
+//       item.title = data[key].title;
+//       item.subtitle = data[key].description;
+//       item.image = new cast.framework.messages.Image(data[key].poster);
+//       item.imageType = cast.framework.ui.BrowseImageType.MOVIE;
+//       browseItems.push(item);
+//     }
+//   });
+//   return browseItems;
+// }
 
-let browseContent = new cast.framework.ui.BrowseContent();
-browseContent.title = 'Up Next';
-browseContent.items = browseItems;
-browseContent.targetAspectRatio =
-  cast.framework.ui.BrowseImageAspectRatio.LANDSCAPE_16_TO_9;
+// let browseContent = new cast.framework.ui.BrowseContent();
+// browseContent.title = 'Up Next';
+// browseContent.items = browseItems;
+// browseContent.targetAspectRatio =
+//   cast.framework.ui.BrowseImageAspectRatio.LANDSCAPE_16_TO_9;
 
 playerDataBinder.addEventListener(
   cast.framework.ui.PlayerDataEventType.MEDIA_CHANGED,
