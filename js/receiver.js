@@ -1,6 +1,6 @@
 const context = cast.framework.CastReceiverContext.getInstance();
 const playerManager = context.getPlayerManager();
-let iteration = 0;
+let iteration = 1;
 let interval = 120000;
 let playlistData;
 
@@ -60,6 +60,12 @@ function makeRequest (method, url) {
     xhr.send();
   });
 }
+const playerManager =
+    cast.framework.CastReceiverContext.getInstance().getPlayerManager();
+playerManager.addEventListener(
+    cast.framework.events.EventType.MEDIA_STATUS, (event) => {
+      console.log("Media Event : ", event);
+});
 
 playerManager.setMessageInterceptor(
   cast.framework.messages.MessageType.LOAD,
