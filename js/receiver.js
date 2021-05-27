@@ -1,5 +1,8 @@
 const context = cast.framework.CastReceiverContext.getInstance();
 const playerManager = context.getPlayerManager();
+let iteration = 0;
+let interval = 120000;
+let playlistData;
 
 //Media Sample API Values
 // const SAMPLE_URL = "https://storage.googleapis.com/cpe-sample-media/content.json";
@@ -36,7 +39,7 @@ function makeRequest (method, url) {
   return new Promise(function (resolve, reject) {
     let xhr = new XMLHttpRequest();
     xhr.open(method, url);
-    xhr.setRequestHeader('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoidGVzdGVyM0BibGFja2RvdmUuY28iLCJpYXQiOjE2MjIwMjcxMDIsImV4cCI6MTYyMjExMzUwMiwianRpIjoiYWNjZXNzX3Rva2VuIn0.EK6xNhSRIzHIFsWo3-RPX0Z812CnOn4E71X7Myt24qY');
+    xhr.setRequestHeader('Authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjoidGVzdGVyM0BibGFja2RvdmUuY28iLCJpYXQiOjE2MjIwOTc5NDcsImV4cCI6MTYyMjE4NDM0NywianRpIjoiYWNjZXNzX3Rva2VuIn0.WWF9iG2BLXGqzN_eLwH4adbtL0Y6AKc1cMYBFFRfUdw');
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onload = function () {
       if (this.status >= 200 && this.status < 300) {
@@ -74,9 +77,10 @@ playerManager.setMessageInterceptor(
       makeRequest('GET', SAMPLE_URL)
         .then(function (data) {
           console.log("Data : ", data);
+          playlistData = data;
           // Obtain resources by contentId from downloaded repository metadata.
           // let item = data[request.media.contentId];
-          let item = data.artworks.length;
+          let item = playlistData.artworks.length;
           if(item < 0) {
             // Content could not be found in repository
             castDebugLogger.error(LOG_TAG, 'Content not found');
@@ -87,7 +91,12 @@ playerManager.setMessageInterceptor(
 
             // // Configure player to parse DASH content
             // if(TEST_STREAM_TYPE == StreamType.DASH) {
-              request.media.contentUrl = data.artworks[0].media.video.dash;
+              request.media.contentUrl = playlistData.artworks[iteration].media.video.dash;
+              iteration = iteration + 1;
+              setInterval(() => {
+                request.media.contentUrl = playlistData.artworks[iteration].media.video.dash;
+                iteration = iteration + 1;              
+              }, interval);
             // }
 
             // // Configure player to parse HLS content
@@ -97,11 +106,13 @@ playerManager.setMessageInterceptor(
             //   request.media.hlsVideoSegmentFormat = cast.framework.messages.HlsVideoSegmentFormat.FMP4;
             // }
             
-            castDebugLogger.warn(LOG_TAG, 'Playable URL:', data.artworks[0].media.video.dash);
+            castDebugLogger.warn(LOG_TAG, 'Playable URL:', playlistData.artworks[iteration].media.video.dash);
             
             // Add metadata
             let metadata = new cast.framework.messages.GenericMediaMetadata();
-            metadata.title = "Blackdove Featured Collection";
+            // metadata.title = "Blackdove Featured Collection";
+            // metadata.subtitle = "App by Vikas Sharma";
+            metadata.title = playlistData.artworks[iteration].name;
             metadata.subtitle = "App by Vikas Sharma";
 
             request.media.metadata = metadata;
