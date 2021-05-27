@@ -100,7 +100,8 @@ playerManager.setMessageInterceptor(
               iteration = iteration + 1;
               setInterval(() => {
                 request.media.contentUrl = playlistData.artworks[iteration].media.video.dash;
-                iteration = iteration + 1;              
+                if(iteration < playlistData.artworks.length) iteration = iteration + 1;              
+                else iteration = 0;
               }, interval);
             // }
 
@@ -118,7 +119,7 @@ playerManager.setMessageInterceptor(
             // metadata.title = "Blackdove Featured Collection";
             // metadata.subtitle = "App by Vikas Sharma";
             metadata.title = playlistData.artworks[iteration].name;
-            metadata.subtitle = "App by Vikas Sharma";
+            metadata.subtitle = playlistData.artworks[iteration]._embedded.artist.givenName + " " + playlistData.artworks[iteration]._embedded.artist.surname;
 
             request.media.metadata = metadata;
 
