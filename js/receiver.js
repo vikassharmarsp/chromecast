@@ -60,8 +60,7 @@ function makeRequest (method, url) {
     xhr.send();
   });
 }
-const playerManager =
-    cast.framework.CastReceiverContext.getInstance().getPlayerManager();
+
 playerManager.addEventListener(
     cast.framework.events.EventType.MEDIA_STATUS, (event) => {
       console.log("Media Event : ", event);
